@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: Disposal-server
+qiniu:
+  accessKey:
+  secretKey:
+  bucket:
