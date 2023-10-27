@@ -14,7 +14,12 @@ import com.shortview.disposal.configuration.QiniuConfiguration;
 import com.shortview.disposal.service.DisposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,20 +29,24 @@ import java.util.UUID;
  */
 @Service
 public class DisposalServiceImpl implements DisposalService {
+    private  QiniuConfiguration qiniuConfiguration;
     @Autowired
-    private QiniuConfiguration qiniuConfiguration;
+    public DisposalServiceImpl(QiniuConfiguration qiniuConfiguration) {
+        this.qiniuConfiguration = qiniuConfiguration;
+    }
     // 获取配置数据
     String bucket = qiniuConfiguration.getBucket();
     String accessKey = qiniuConfiguration.getAccessKey();
     String secretKey = qiniuConfiguration.getSecretKey();
     Auth auth = Auth.create(accessKey, secretKey);
 
+
+    //视频文件上传--文件上传表单上传的文件（MultipartFile）上传到七牛云存储
     @Override
-    public String upload() {
+    public String upload(@RequestParam("file") MultipartFile file) {
 
         // 1、构造一个带指定 Region 对象的配置类。指定存储区域，和存储空间选择的区域一致
         Configuration cfg = new Configuration(Region.region0());
-        // ...其他参数参考类注释
         UploadManager uploadManager = new UploadManager(cfg);
         // 2、认证
         // 认证通过后得到 token（令牌）认证凭证
@@ -51,9 +60,39 @@ public class DisposalServiceImpl implements DisposalService {
              * - 默认文件名存在桶中时，不覆盖
              * String token：认证凭证
              */
-            String localFilePath = "D:\\TempFiles\\足球11.jpg";
             String key = UUID.randomUUID() + "足球file.jpg";
-            Response response = uploadManager.put(localFilePath, key, upToken);
+            Response response = uploadManager.put(file.getBytes(), key, upToken);
+            // 4、解析上传成功的结果
+            DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+            System.out.println("文件名：" + putRet.key);
+            System.out.println("文件内容的hash值：" + putRet.hash);
+        } catch (QiniuException ex) {
+            Response r = ex.response;
+            System.err.println(r.toString());
+            try {
+                System.err.println(r.bodyString());
+            } catch (QiniuException ex2) {
+                throw new RuntimeException(ex);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return upToken;
+    }
+    @Override
+    public String uploadLocalVideo() {
+        // 1、构造一个带指定 Region 对象的配置类。指定存储区域，和存储空间选择的区域一致
+        Configuration cfg = new Configuration(Region.region0());
+        UploadManager uploadManager = new UploadManager(cfg);
+
+        // 2、认证
+        String upToken = auth.uploadToken(bucket);
+
+        try {
+            // 3、本地视频文件路径
+            String localVideoFilePath = "D:/Videos/myvideo.mp4"; // 指定本地视频文件路径
+            String key = UUID.randomUUID() + "myvideo.mp4"; // 指定文件名
+            Response response = uploadManager.put(localVideoFilePath, key, upToken);
             // 4、解析上传成功的结果
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
             System.out.println("文件名：" + putRet.key);
@@ -70,11 +109,12 @@ public class DisposalServiceImpl implements DisposalService {
         return upToken;
     }
 
+
+    //视频文件下载
     @Override
-    public void download() {
+    public List<String> download() {
         // 1、构造一个带指定 Region 对象的配置类。
         Configuration cfg = new Configuration(Region.huadong());
-        // ...其他参数参考类注释
         // 2、认证
         BucketManager bucketManager = new BucketManager(auth, cfg);
         /**
@@ -88,17 +128,15 @@ public class DisposalServiceImpl implements DisposalService {
         int limit = 1000;
         String delimiter = "";
         BucketManager.FileListIterator fileListIterator = bucketManager.createFileListIterator(bucket, prefix, limit, delimiter);
+        List<String> videoInfoList = new ArrayList<>();
         while (fileListIterator.hasNext()) {
             // 处理获取的file list结果
             FileInfo[] items = fileListIterator.next();
             for (FileInfo item : items) {
-                System.out.println(item.key);
-                System.out.println(item.hash);
-                System.out.println(item.fsize);
-                System.out.println(item.mimeType);
-                System.out.println(item.putTime);
-                System.out.println(item.endUser);
+                String info = item.key + ", " + item.hash + ", " + item.fsize + ", " + item.mimeType + ", " + item.putTime + ", " + item.endUser;
+                videoInfoList.add(info);
             }
         }
+        return videoInfoList;
     }
 }

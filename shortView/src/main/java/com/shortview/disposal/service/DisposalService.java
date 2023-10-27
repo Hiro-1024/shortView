@@ -1,5 +1,10 @@
 package com.shortview.disposal.service;
 
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
 /**
  * @Author wanghui
  * @Date 2023/10/25 0025 10:27
@@ -7,7 +12,8 @@ package com.shortview.disposal.service;
  */
 public interface DisposalService {
     //上传视频
-    String upload();
+    String upload(@RequestParam("file") MultipartFile file);
+    String uploadLocalVideo();
     //下载视频
-    void download();
+    List<String> download();
 }
