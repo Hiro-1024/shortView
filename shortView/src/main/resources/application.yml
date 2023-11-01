@@ -1,7 +1,25 @@
-spring:
-  application:
-    name: Disposal-server
 qiniu:
   accessKey: v8vTOwgM9iHfkU4DQUR_KmI9_X_LvMDCA5An9-s1
   secretKey: 9M0KiRoOZRTfQ5971N0xv-0fvPy0QRDIMA9MkJ3D
   bucket: probucket
+  url: s35ywnxgs.bkt.clouddn.com
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/shortview?serverTimezone=UTC
+    username: root
+    password: 123456
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 配置日志输出
+    map-underscore-to-camel-case: true # 开启驼峰命名
+
+
+
+
