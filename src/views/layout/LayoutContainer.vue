@@ -17,6 +17,7 @@ import { ElMessageBox } from 'element-plus'
 const userStore = useUserStore()
 const router = useRouter()
 
+// 加个注释
 onMounted(() => {
   userStore.getUser()
 })

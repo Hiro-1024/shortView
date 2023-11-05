@@ -4,7 +4,7 @@ import { userGetInfoService } from '../../api/user'
 
 // 用户模块 token setToken removeToken
 export const useUserStore = defineStore(
-  'big-user',
+  'user',
   () => {
     const token = ref('')
     const setToken = (newToken) => {
