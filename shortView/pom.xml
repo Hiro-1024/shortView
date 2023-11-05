@@ -72,7 +72,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-<<<<<<< HEAD
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
@@ -83,9 +82,6 @@
 			<artifactId>fastjson2</artifactId>
 			<version>2.0.26</version>
 		</dependency>
-
-
-=======
 		<!--集成redis-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -101,7 +97,6 @@
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 		</dependency>
->>>>>>> 3c6eb75 (“2023-11-5”)
 	</dependencies>
 
 	<build>
