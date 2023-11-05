@@ -61,11 +61,11 @@ const handleCommand = async (key) => {
       >
         <el-menu-item index="/article/channel">
           <el-icon><Management /></el-icon>
-          <span>文章分类</span>
+          <span>test1</span>
         </el-menu-item>
         <el-menu-item index="/article/manage">
           <el-icon><Promotion /></el-icon>
-          <span>文章管理</span>
+          <span>test2</span>
         </el-menu-item>
 
         <el-sub-menu index="/user">
@@ -137,10 +137,6 @@ const handleCommand = async (key) => {
   height: 100vh;
   .el-aside {
     background-color: #232323;
-    &__logo {
-      height: 120px;
-      background: url('@/assets/logo.png') no-repeat center / 120px auto;
-    }
     .el-menu {
       border-right: none;
     }
