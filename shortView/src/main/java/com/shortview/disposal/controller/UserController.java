@@ -2,7 +2,6 @@ package com.shortview.disposal.controller;
 
 import com.shortview.disposal.dto.req.UserLoginReqDTO;
 import com.shortview.disposal.dto.resp.UserLoginRespDTO;
-import com.shortview.disposal.response.Response;
 import com.shortview.disposal.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -29,7 +29,5 @@ public interface VideoService extends IService<Video> {
 
     List<Video> searchVideos(String query);
 
-
-
     List<Video> getPersonalVideos(Long uid);
 }

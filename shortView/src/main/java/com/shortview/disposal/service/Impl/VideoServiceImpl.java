@@ -55,6 +55,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
             video1.setContext(context);
             video1.setTitle(title);
             video1.setStatus(status);
+            video1.setLikes(0);
             videoMapper.insert(video1);
             //保存七牛云存储上的信息
             int video_id = videoMapper.getId(video1.getUrl());

@@ -9,9 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author wanghui
@@ -35,13 +34,12 @@ public class QiniuController {
             // 尝试上传视频
             String path = videoService.uploadVideo(file, className, context, title, status);
             if (path != null) {
-                return Result.ok().data(path).message("上传成功！");
+                return Result.ok().data("七牛云返回路径: " + path).message("上传成功！");
             } else {
                 throw new Exception("上传失败的错误消息");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return Result.error().message("上传失败：" + e.getMessage());
+            return Result.error().message("上传失败：");
         }
     }
 
@@ -69,7 +67,6 @@ public class QiniuController {
         List<Video> nextVideoUrl = videoService.getNextVideoUrl(id);
 
         if (nextVideoUrl != null && !nextVideoUrl.isEmpty()) {
-            Map<String, String> response = new HashMap<>();
             int status = videoService.getStatus( videoService.getNextId(id));
             if (status != 0) {
                 // 有权限，返回下一个视频的URL
@@ -98,7 +95,7 @@ public class QiniuController {
     }
 
     // 搜索视频接口
-    @GetMapping("/search")
+    @RequestMapping(value = "/search",method = RequestMethod.GET)
     public Result searchVideos(@RequestParam("query") String query) {
         List<Video> searchResults = videoService.searchVideos(query);
         if (!searchResults.isEmpty()) {

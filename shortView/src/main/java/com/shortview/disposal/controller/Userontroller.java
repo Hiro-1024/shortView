@@ -34,6 +34,4 @@ public class Userontroller {
             return Result.error().message("个人视频列表为空");
         }
     }
-    //查看个人收藏列表
-
 }

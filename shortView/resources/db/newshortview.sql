@@ -11,7 +11,7 @@
  Target Server Version : 80034
  File Encoding         : 65001
 
- Date: 05/11/2023 10:56:58
+ Date: 05/11/2023 15:33:02
 */
 
 SET NAMES utf8mb4;
@@ -55,7 +55,7 @@ CREATE TABLE `qiniuvideo`  (
   `video_id` int(0) NOT NULL,
   `originalFilename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`qiniu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for video
@@ -65,16 +65,13 @@ CREATE TABLE `video`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `user_id` int(0) NOT NULL,
-  `like` int(0) NULL DEFAULT NULL COMMENT '点赞',
+  `likes` int(0) NULL DEFAULT NULL COMMENT '点赞',
   `class_id` int(0) NOT NULL,
   `create_time` datetime(0) NOT NULL,
   `filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '视频文件',
   `context` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `status` tinyint(1) NOT NULL,
-  `collect` tinyint(1) NOT NULL COMMENT ,
-  `focus` tinyint(0) UNSIGNED NOT NULL COMMENT ,
-  `three_connect` tinyint(1) NOT NULL COMMENT ,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 

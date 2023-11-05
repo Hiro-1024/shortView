@@ -5,6 +5,4 @@ import com.shortview.disposal.dto.resp.UserLoginRespDTO;
 
 public interface UserService {
     UserLoginRespDTO login(UserLoginReqDTO userLoginReqDTO);
-
-
 }

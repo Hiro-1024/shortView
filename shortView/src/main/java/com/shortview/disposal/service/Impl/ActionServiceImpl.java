@@ -33,7 +33,7 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action> impleme
 
             Video video = new Video();
             int likecount = getLike(videoId);
-            video.setLike(likecount);
+            video.setLikes(likecount);
             return Result.ok().message("点赞成功！");
         } else {
             return Result.error().message("您已经点赞过该视频");
