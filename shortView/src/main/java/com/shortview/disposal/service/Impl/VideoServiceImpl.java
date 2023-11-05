@@ -2,17 +2,23 @@ package com.shortview.disposal.service.Impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shortview.disposal.configuration.QiniuConfiguration;
+import com.shortview.disposal.entity.Action;
 import com.shortview.disposal.entity.QiniuVideo;
 import com.shortview.disposal.entity.Video;
+import com.shortview.disposal.mapper.ActionMapper;
 import com.shortview.disposal.mapper.ClassMapper;
 import com.shortview.disposal.mapper.QiniuVideoMapper;
 import com.shortview.disposal.mapper.VideoMapper;
 import com.shortview.disposal.service.VideoService;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author wanghui
@@ -29,9 +35,13 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     private ClassMapper classMapper;
     @Autowired
     private QiniuVideoMapper qiniuVideoMapper;
+    @Autowired
+    private ActionMapper actionMapper;
+    @Resource
+    private RedisTemplate<String, List<Video>> redisTemplate;
 
     @Override
-    public QiniuVideo uploadVideo(MultipartFile multipartFile, String className,String context,String title,int status) {
+    public String uploadVideo(MultipartFile multipartFile, String className,String context,String title,int status) {
         QiniuVideo qiniuVideo = qiniuConfiguration.uploadVideoQiniu(multipartFile);
         if (qiniuVideo != null) {
             //保存视频信息到数据库video
@@ -51,7 +61,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
             qiniuVideo.setVideo_id((long) video_id);
             qiniuVideoMapper.Insert(qiniuVideo);
         }
-        return qiniuVideo;
+        return qiniuVideo.getUrl();
     }
 
 
@@ -68,14 +78,13 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     //滑动获取下一个视频的url
     @Override
-    public String getNextVideoUrl(Long id) {
-        //通过上一个id，获取下一个视频url
-        try {
-            String nextVideoUrl = videoMapper.findNextVideoUrl(id);
-            return nextVideoUrl;
-        }
-        catch (Exception e){
-            return "视频不存在";
+    public List<Video> getNextVideoUrl(Long id) {
+        List<Video> nextVideoInfo = videoMapper.findNextVideoInfo(id);
+
+        if (nextVideoInfo!= null && !nextVideoInfo.isEmpty()) {
+            return nextVideoInfo;
+        } else {
+            return Collections.emptyList();
         }
     }
 
@@ -95,11 +104,11 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     }
 
 
-    // 通过类名获取下一个视频的url
+    // 通过类名获取下一个视频的信息
     @Override
-    public List<String> getClassVideoUrl(String className) {
+    public List<String> getClassVideoInfo(String className) {
         int class_id = getClassByName(className);
-        List<String> videoUrls = videoMapper.findClassVideoUrls(class_id);
+        List<String> videoUrls = videoMapper.findClassVideoInfo(class_id);
         return videoUrls;
     }
 
@@ -109,4 +118,42 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         int status = videoMapper.getStatus(id);
         return status;
     }
+
+    //搜索视频
+    @Override
+    public List<Video> searchVideos(String query) {
+        // 1. 尝试从Redis缓存中获取搜索结果
+        String cacheKey = "searchResults:" + query;
+        List<Video> cachedResults = redisTemplate.opsForValue().get(cacheKey);
+
+        if (cachedResults != null) {
+            // 2. 如果Redis中有缓存数据，直接返回
+            return cachedResults;
+        } else {
+            // 3. 如果Redis中没有缓存数据，执行数据库查询操作
+            List<Video> searchResults = videoMapper.findByTitleContaining(query);
+
+            // 4. 将数据库查询结果存入Redis缓存并设置过期时间
+            if (!searchResults.isEmpty()) {
+                redisTemplate.opsForValue().set(cacheKey, searchResults);
+                // 设置缓存过期时间， 1小时
+                redisTemplate.expire(cacheKey, 1, TimeUnit.HOURS);
+            }
+            return searchResults;
+        }
+    }
+
+    //通过当前id查询下一个id
+    public Long getNextId(Long id) {
+        Long nid = videoMapper.getNextId(id);
+        return nid;
+    }
+
+    //获取个人发布视频列表
+    @Override
+    public List<Video> getPersonalVideos(Long uid) {
+        List<Video> perList = videoMapper.getPersonalVideos(uid);
+        return perList;
+    }
+
 }

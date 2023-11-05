@@ -16,14 +16,20 @@ import java.util.List;
 public interface VideoService extends IService<Video> {
 
     //上传视频到七牛云存储中
-    public QiniuVideo uploadVideo(MultipartFile multipartFile,String className,String context,String title,int status);
+    String uploadVideo(MultipartFile multipartFile,String className,String context,String title,int status);
 
-    //获取下一个视频url
-    String getNextVideoUrl(Long id);
+    //获取下一个视频url,context,title
+    List<Video> getNextVideoUrl(Long id);
 
     boolean remove(String bucket, String fileKey);
 
-    List<String> getClassVideoUrl(String className);
+    List<String> getClassVideoInfo(String className);
 
     int getStatus(Long id);
+
+    List<Video> searchVideos(String query);
+
+
+
+    List<Video> getPersonalVideos(Long uid);
 }

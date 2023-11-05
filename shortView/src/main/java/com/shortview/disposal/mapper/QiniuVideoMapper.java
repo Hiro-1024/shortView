@@ -27,4 +27,10 @@ public interface QiniuVideoMapper extends BaseMapper<QiniuVideo> {
     //通过video_id去查询qiniu_id
     @Select("SELECT  qiniu_id FROM  qiniuvideo WHERE  video_id= #{videoId} ")
     int getQidByVid(int videoId);
+
+    @Select("SELECT bucket FROM  qiniuvideo WHERE  video_id = #{id} ")
+    String getBucketById(Long id);
+
+    @Select("SELECT path FROM  qiniuvideo WHERE  video_id = #{id} ")
+    String getPathById(Long id);
 }

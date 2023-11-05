@@ -31,4 +31,8 @@ public class Video {
     private String context;
     private String title;
     private int status;
+    private int like;
+    private int collect;
+    private int focus;
+    private int three_connect;
 }

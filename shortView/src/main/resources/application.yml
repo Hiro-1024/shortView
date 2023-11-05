@@ -14,11 +14,28 @@ spring:
     multipart:
       max-request-size: 10MB
       max-file-size: 10MB
+  data:
+    redis:
+      host: 192.168.58.128
+      port: 6379
+      database: 0
+      timeout: 1000
+      lettuce:
+        pool:
+          max-active: 20
+          max-wait: -1
+          max-idle: 5
+          min-idle: 0
+
+
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 配置日志输出
     map-underscore-to-camel-case: true # 开启驼峰命名
+
+
+
 
 
 
