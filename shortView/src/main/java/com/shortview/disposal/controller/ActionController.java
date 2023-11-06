@@ -23,22 +23,22 @@ public class ActionController {
     //点赞
     @RequestMapping(value = "/like" ,method = RequestMethod.POST)
     public Result likeVideo(@RequestParam Long userId, @RequestParam Long videoId) {
-        try {
-            Result result = actionService.likeVideo(userId, videoId);
-            return Result.ok().data(result);
-        } catch (Exception e) {
-            return Result.error().message("点赞失败！");
+        String result = actionService.likeVideo(userId, videoId);
+        if (result.equals("")){
+            return Result.ok().message("点赞成功");
+        } else {
+            return Result.error().message("点赞失败！").data(result);
         }
     }
 
     // 取消点赞
     @RequestMapping(value = "/unlike" ,method = RequestMethod.POST)
     public Result unlikeVideo(@RequestParam Long userId, @RequestParam Long videoId) {
-        try {
-            actionService.unlikeVideo(userId, videoId);
+        String result = actionService.unlikeVideo(userId, videoId);
+        if (result.equals("")){
             return Result.ok().message("取消点赞成功！");
-        } catch (Exception e) {
-            return Result.error().message("取消点赞失败：" + e.getMessage());
+        } else  {
+            return Result.error().message("取消点赞失败：").data(result);
         }
     }
 

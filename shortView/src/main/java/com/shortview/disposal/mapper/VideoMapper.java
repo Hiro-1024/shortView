@@ -6,6 +6,7 @@ import com.shortview.disposal.entity.Video;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -45,6 +46,16 @@ public interface VideoMapper extends BaseMapper<Video> {
 
     @Select("SELECT url,context,title FROM  video WHERE  user_id =#{uid} ")
     List<Video> getPersonalVideos(Long uid);
+
+
+    @Update("UPDATE video SET likes = likes + 1 WHERE id = #{videoId}")
+    void updateLikeCount(@Param("videoId") Long videoId);
+
+    @Select("SELECT COUNT(*) FROM video WHERE  id = #{videoId} ")
+    int  chenckVideo(Long videoId);
+
+    @Update("UPDATE video SET likes = likes - 1 WHERE id = #{videoId}")
+    void updateLikeCountLose(Long videoId);
 }
 
 

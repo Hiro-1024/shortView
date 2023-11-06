@@ -2,7 +2,6 @@ package com.shortview.disposal.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.shortview.disposal.entity.Action;
-import com.shortview.disposal.entity.Video;
 import com.shortview.disposal.response.Result;
 
 /**
@@ -11,7 +10,7 @@ import com.shortview.disposal.response.Result;
  * @Version 1.0
  */
 public interface ActionService extends IService<Action> {
-    Result likeVideo(Long userId, Long videoId);
+    String likeVideo(Long userId, Long videoId);
 
-    void unlikeVideo(Long userId, Long videoId);
+    String unlikeVideo(Long userId, Long videoId);
 }
